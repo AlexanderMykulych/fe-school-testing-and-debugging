@@ -21,8 +21,8 @@ const outOfStockProduct: Product = {
   stock: 0
 }
 
-test.describe('🛒 ProductCard Component', () => {
-  test('📦 Відображає інформацію про товар', async ({ mount }) => {
+test.describe('ProductCard Component', () => {
+  test('displays product information', async ({ mount }) => {
     const component = await mount(ProductCard, {
       props: {
         product: mockProduct
@@ -45,7 +45,7 @@ test.describe('🛒 ProductCard Component', () => {
     await expect(component.getByTestId('product-stock')).toContainText('Залишилось: 5')
   })
 
-  test('🖼️ Відображає зображення товару', async ({ mount }) => {
+  test('displays product image', async ({ mount }) => {
     const component = await mount(ProductCard, {
       props: {
         product: mockProduct
@@ -57,7 +57,7 @@ test.describe('🛒 ProductCard Component', () => {
     await expect(productImage).toHaveAttribute('alt', 'Тестовий ноутбук')
   })
 
-  test('🛒 Дозволяє додати товар до кошика', async ({ mount }) => {
+  test('allows adding product to cart', async ({ mount }) => {
     const component = await mount(ProductCard, {
       props: {
         product: mockProduct
@@ -76,7 +76,7 @@ test.describe('🛒 ProductCard Component', () => {
     await expect(quantitySelect).toBeEnabled()
   })
 
-  test('🚫 Відображає недоступний товар', async ({ mount }) => {
+  test('displays out of stock product', async ({ mount }) => {
     const component = await mount(ProductCard, {
       props: {
         product: outOfStockProduct
@@ -97,7 +97,7 @@ test.describe('🛒 ProductCard Component', () => {
     await expect(quantitySelect).toBeDisabled()
   })
 
-  test('⚠️ Відображає попередження для товарів з низьким запасом', async ({ mount }) => {
+  test('displays low stock warning', async ({ mount }) => {
     const lowStockProduct = { ...mockProduct, stock: 2 }
 
     const component = await mount(ProductCard, {
@@ -111,7 +111,7 @@ test.describe('🛒 ProductCard Component', () => {
     await expect(stockElement).toHaveClass(/stock--low/)
   })
 
-  test('🔢 Дозволяє вибрати кількість товару', async ({ mount }) => {
+  test('allows selecting product quantity', async ({ mount }) => {
     const component = await mount(ProductCard, {
       props: {
         product: mockProduct
@@ -125,7 +125,7 @@ test.describe('🛒 ProductCard Component', () => {
     await expect(quantitySelect).toHaveValue('3')
   })
 
-  test('💰 Правильно форматує ціну в гривнях', async ({ mount }) => {
+  test('formats price in UAH currency', async ({ mount }) => {
     const expensiveProduct = { ...mockProduct, price: 123456.78 }
 
     const component = await mount(ProductCard, {
@@ -139,7 +139,7 @@ test.describe('🛒 ProductCard Component', () => {
     await expect(priceElement).toContainText('123')
   })
 
-  test('🎭 Емітує події при додаванні до кошика', async ({ mount }) => {
+  test('emits events when adding to cart', async ({ mount }) => {
     let emittedProduct: Product | null = null
     let emittedQuantity = 0
 
@@ -172,7 +172,7 @@ test.describe('🛒 ProductCard Component', () => {
     expect(emittedQuantity).toBe(3)
   })
 
-  test('📸 Скріншот компонента ProductCard', async ({ mount }) => {
+  test('ProductCard component screenshot', async ({ mount }) => {
     const component = await mount(ProductCard, {
       props: {
         product: mockProduct
@@ -186,7 +186,7 @@ test.describe('🛒 ProductCard Component', () => {
     await expect(component).toHaveScreenshot('product-card-default.png')
   })
 
-  test('📸 Скріншот компонента ProductCard без товару на складі', async ({ mount }) => {
+  test('ProductCard component out of stock screenshot', async ({ mount }) => {
     const component = await mount(ProductCard, {
       props: {
         product: outOfStockProduct

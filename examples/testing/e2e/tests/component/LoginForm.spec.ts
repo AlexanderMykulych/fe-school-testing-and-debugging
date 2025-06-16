@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/experimental-ct-vue'
 import LoginForm from '@/components/LoginForm.vue'
 
-test.describe('🔐 LoginForm Component', () => {
-  test('📋 Відображає форму входу з усіма елементами', async ({ mount }) => {
+test.describe('LoginForm Component', () => {
+  test('displays login form with all elements', async ({ mount }) => {
     const component = await mount(LoginForm)
 
     // Перевіряємо заголовок форми
@@ -24,7 +24,7 @@ test.describe('🔐 LoginForm Component', () => {
     await expect(component).toContainText('user / user123')
   })
 
-  test('🔒 Кнопка входу недоступна для коротких даних', async ({ mount }) => {
+  test('login button disabled for short input data', async ({ mount }) => {
     const component = await mount(LoginForm)
 
     // За замовчуванням кнопка має бути недоступна
@@ -39,7 +39,7 @@ test.describe('🔐 LoginForm Component', () => {
     await expect(component.getByTestId('submit-button')).toBeDisabled()
   })
 
-  test('✅ Кнопка входу доступна для валідних даних', async ({ mount }) => {
+  test('login button enabled for valid data', async ({ mount }) => {
     const component = await mount(LoginForm)
 
     // Вводимо валідні дані
@@ -50,7 +50,7 @@ test.describe('🔐 LoginForm Component', () => {
     await expect(component.getByTestId('submit-button')).toBeEnabled()
   })
 
-  test('🎭 Емітує подію успішного входу для валідних облікових даних', async ({ mount }) => {
+  test('emits successful login event for valid credentials', async ({ mount }) => {
     let loginSuccessEmitted = false
     let loginErrorEmitted = false
     let emittedUser: any = null
@@ -87,7 +87,7 @@ test.describe('🔐 LoginForm Component', () => {
     expect(emittedUser.username).toBe('admin')
   })
 
-  test('🚫 Емітує подію помилки для неправильних облікових даних', async ({ mount }) => {
+  test('emits error event for invalid credentials', async ({ mount }) => {
     let loginSuccessEmitted = false
     let loginErrorEmitted = false
     let emittedError: string = ''
@@ -124,7 +124,7 @@ test.describe('🔐 LoginForm Component', () => {
     expect(emittedError).toContain('Невірний логін або пароль')
   })
 
-  test('🔄 Очищає форму після успішного входу', async ({ mount }) => {
+  test('clears form after successful login', async ({ mount }) => {
     const component = await mount(LoginForm)
 
     // Вводимо валідні дані
@@ -142,7 +142,7 @@ test.describe('🔐 LoginForm Component', () => {
     await expect(component.getByTestId('password-input')).toHaveValue('')
   })
 
-  test('🏷️ Має правильні атрибути доступності', async ({ mount }) => {
+  test('has proper accessibility attributes', async ({ mount }) => {
     const component = await mount(LoginForm)
 
     // Перевіряємо labels

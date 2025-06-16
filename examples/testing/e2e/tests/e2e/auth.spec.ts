@@ -1,12 +1,12 @@
 import { test, expect } from '../fixtures/auth-fixture'
 
-test.describe('🔐 Авторизація користувачів', () => {
+test.describe('User Authentication', () => {
   test.beforeEach(async ({ page, ensureLoggedOut }) => {
     // Переконуємося що користувач вийшов перед кожним тестом
     await ensureLoggedOut()
   })
 
-  test('✅ Успішний логін адміністратора', async ({ page, loginAsAdmin }) => {
+  test('successful admin login', async ({ page, loginAsAdmin }) => {
     await loginAsAdmin()
     
     // Перевіряємо що користувач на головній сторінці
@@ -22,7 +22,7 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('login-link')).not.toBeVisible()
   })
 
-  test('✅ Успішний логін звичайного користувача', async ({ page, loginAsUser }) => {
+  test('successful regular user login', async ({ page, loginAsUser }) => {
     await loginAsUser()
     
     // Перевіряємо що користувач на головній сторінці
@@ -35,7 +35,7 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('user-section')).toBeVisible()
   })
 
-  test('❌ Невдалий логін з неправильними даними', async ({ page }) => {
+  test('failed login with incorrect credentials', async ({ page }) => {
     await page.goto('/login')
     
     // Заповнюємо форму неправильними даними
@@ -56,7 +56,7 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('user-greeting')).not.toBeVisible()
   })
 
-  test('🔄 Логаут користувача', async ({ page, loginAsUser, logout }) => {
+  test('user logout', async ({ page, loginAsUser, logout }) => {
     // Спочатку логінимося
     await loginAsUser()
     
@@ -77,7 +77,7 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('guest-cta')).toBeVisible()
   })
 
-  test('📝 Валідація форми логіну', async ({ page }) => {
+  test('login form validation', async ({ page }) => {
     await page.goto('/login')
     
     await expect(page.getByTestId('submit-button')).toBeDisabled()
@@ -90,7 +90,7 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('submit-button')).toBeEnabled()
   })
 
-  test('🚪 Перенаправлення з сторінки логіну для авторизованих користувачів', async ({ 
+  test('redirect from login page for authenticated users', async ({ 
     page, 
     loginAsUser 
   }) => {
@@ -107,7 +107,7 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('user-greeting')).toBeVisible()
   })
 
-  test('🔒 Збереження стану авторизації при оновленні сторінки', async ({ 
+  test('preserve authentication state on page refresh', async ({ 
     page, 
     loginAsAdmin 
   }) => {
@@ -122,7 +122,7 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('user-greeting')).toContainText('admin')
   })
 
-  test('⚡ Автоматичне завершення сесії', async ({ page, loginAsUser }) => {
+  test('automatic session termination', async ({ page, loginAsUser }) => {
     await loginAsUser()
     
     // Симулюємо видалення токена з localStorage (автоматичний логаут)
@@ -138,7 +138,7 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('user-greeting')).not.toBeVisible()
   })
 
-  test('👤 Відображення різних даних для різних ролей', async ({ page, loginAsAdmin, logout, loginAsUser }) => {
+  test('display different data for different roles', async ({ page, loginAsAdmin, logout, loginAsUser }) => {
     await loginAsAdmin()
     
     // Перевіряємо що для адміна показується правильна роль
@@ -156,7 +156,7 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('user-section')).toContainText('Користувач')
   })
 
-  test('🔄 Множинні спроби логіну', async ({ page }) => {
+  test('multiple login attempts', async ({ page }) => {
     await page.goto('/login')
     
     // Декілька невдалих спроб

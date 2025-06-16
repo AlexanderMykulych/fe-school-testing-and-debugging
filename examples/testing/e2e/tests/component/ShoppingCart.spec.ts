@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/experimental-ct-vue'
 import ShoppingCart from '@/components/ShoppingCart.vue'
 
-test.describe('🛒 ShoppingCart Component', () => {
-  test('📦 Відображає порожній кошик', async ({ mount }) => {
+test.describe('ShoppingCart Component', () => {
+  test('displays empty cart', async ({ mount }) => {
     const component = await mount(ShoppingCart)
 
     // Перевіряємо повідомлення про порожній кошик
@@ -17,7 +17,7 @@ test.describe('🛒 ShoppingCart Component', () => {
     await expect(component.getByTestId('total-price')).toContainText('0')
   })
 
-  test('🎯 Показує спонукання до покупок для порожнього кошика', async ({ mount }) => {
+  test('shows purchase prompt for empty cart', async ({ mount }) => {
     const component = await mount(ShoppingCart)
 
     // Перевіряємо що є посилання для продовження покупок
@@ -25,7 +25,7 @@ test.describe('🛒 ShoppingCart Component', () => {
     await expect(component.getByTestId('continue-shopping-link')).toContainText('Почати покупки')
   })
 
-  test('💰 Форматує ціни у гривнях', async ({ mount }) => {
+  test('formats prices in UAH currency', async ({ mount }) => {
     const component = await mount(ShoppingCart)
 
     // Перевіряємо формат валюти в загальній сумі
@@ -36,7 +36,7 @@ test.describe('🛒 ShoppingCart Component', () => {
     await expect(totalPrice).toContainText('0')
   })
 
-  test('🔄 Показує індикатор завантаження під час оформлення', async ({ mount }) => {
+  test('shows loading indicator during checkout', async ({ mount }) => {
     // Цей тест перевіряє стан завантаження
     const component = await mount(ShoppingCart)
 
@@ -44,7 +44,7 @@ test.describe('🛒 ShoppingCart Component', () => {
     await expect(component.getByTestId('loading-indicator')).not.toBeVisible()
   })
 
-  test('🎭 Емітує події оформлення замовлення', async ({ mount }) => {
+  test('emits checkout order events', async ({ mount }) => {
     let checkoutCompletedEmitted = false
     let emittedTotal = 0
 
@@ -65,7 +65,7 @@ test.describe('🛒 ShoppingCart Component', () => {
     expect(checkoutCompletedEmitted).toBe(false)
   })
 
-  test('🎭 Перевіряє що компонент має методи для емітування подій', async ({ mount, page }) => {
+  test('verifies component has methods for emitting events', async ({ mount, page }) => {
     // Простіша перевірка: чи компонент правильно налаштований для емітування подій
     let checkoutCompletedEmitted = false
 
@@ -92,8 +92,7 @@ test.describe('🛒 ShoppingCart Component', () => {
     // краще робити в E2E тестах, де можна симулювати додавання товарів
   })
 
-
-  test('♿ Доступність - ARIA атрибути та семантика', async ({ mount }) => {
+  test('accessibility - ARIA attributes and semantics', async ({ mount }) => {
     const component = await mount(ShoppingCart)
 
     // Перевіряємо семантичні елементи
@@ -111,7 +110,7 @@ test.describe('🛒 ShoppingCart Component', () => {
     await expect(continueLink).toBeVisible()
   })
 
-  test('📊 Показує кількість товарів в кошику', async ({ mount }) => {
+  test('shows cart item count', async ({ mount }) => {
     const component = await mount(ShoppingCart)
 
     // Для порожнього кошика

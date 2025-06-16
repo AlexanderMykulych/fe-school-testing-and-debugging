@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
-test.describe('📸 E2E Скріншоти', () => {
-  test('Скріншот головної сторінки з товарами', async ({ page }) => {
+test.describe('E2E Screenshots', () => {
+  test('homepage with products screenshot', async ({ page }) => {
     // Переходимо на головну сторінку
     await page.goto('/')
 
@@ -17,7 +17,7 @@ test.describe('📸 E2E Скріншоти', () => {
     })
   })
 
-  test('Скріншот сторінки кошика', async ({ page }) => {
+  test('cart page screenshot', async ({ page }) => {
     // Переходимо на головну сторінку
     await page.goto('/')
 
@@ -42,7 +42,7 @@ test.describe('📸 E2E Скріншоти', () => {
     })
   })
 
-  test('Скріншот мобільної версії головної сторінки', async ({ page }) => {
+  test('mobile homepage screenshot', async ({ page }) => {
     // Встановлюємо мобільний viewport
     await page.setViewportSize({ width: 375, height: 667 })
 
@@ -58,7 +58,7 @@ test.describe('📸 E2E Скріншоти', () => {
     })
   })
 
-  test('Скріншот модального вікна деталей товару', async ({ page }) => {
+  test('product details modal screenshot', async ({ page }) => {
     // Переходимо на головну сторінку
     await page.goto('/')
 
