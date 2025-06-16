@@ -166,7 +166,7 @@ const availableQuantities = computed(() => {
 })
 
 const cartItem = computed(() => 
-  cartStore.getItemById.value(props.product.id)
+  cartStore.getItemById(props.product.id)
 )
 
 const isInCart = computed(() => !!cartItem.value)

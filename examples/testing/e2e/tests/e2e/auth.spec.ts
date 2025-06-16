@@ -80,19 +80,14 @@ test.describe('🔐 Авторизація користувачів', () => {
   test('📝 Валідація форми логіну', async ({ page }) => {
     await page.goto('/login')
     
-    // Перевіряємо валідацію пустих полів
-    await page.getByTestId('submit-button').click()
-    
-    await expect(page.getByTestId('username-error')).toBeVisible()
-    await expect(page.getByTestId('password-error')).toBeVisible()
-    
-    // Заповнюємо тільки логін
+    await expect(page.getByTestId('submit-button')).toBeDisabled()
+
+
     await page.getByTestId('username-input').fill('test')
-    await page.getByTestId('submit-button').click()
-    
-    // Логін повинен бути валідним, але пароль ще порожній
-    await expect(page.getByTestId('username-error')).not.toBeVisible()
-    await expect(page.getByTestId('password-error')).toBeVisible()
+    await expect(page.getByTestId('submit-button')).toBeDisabled()
+
+    await page.getByTestId('password-input').fill('test1234')
+    await expect(page.getByTestId('submit-button')).toBeEnabled()
   })
 
   test('🚪 Перенаправлення з сторінки логіну для авторизованих користувачів', async ({ 
@@ -143,23 +138,18 @@ test.describe('🔐 Авторизація користувачів', () => {
     await expect(page.getByTestId('user-greeting')).not.toBeVisible()
   })
 
-  test('👤 Відображення різних даних для різних ролей', async ({ page, loginAsAdmin }) => {
+  test('👤 Відображення різних даних для різних ролей', async ({ page, loginAsAdmin, logout, loginAsUser }) => {
     await loginAsAdmin()
     
     // Перевіряємо що для адміна показується правильна роль
     await expect(page.getByTestId('user-section')).toBeVisible()
     await expect(page.getByTestId('user-section')).toContainText('Адміністратор')
     
-    // Виходимо та входимо як звичайний користувач
-    await page.getByTestId('logout-button').click()
+    // Виходимо з системи
+    await logout()
     
-    await page.goto('/login')
-    await page.getByTestId('username-input').fill('user')
-    await page.getByTestId('password-input').fill('user123')
-    await page.getByTestId('submit-button').click()
-    
-    await expect(page.getByTestId('success-notification')).toBeVisible()
-    await page.waitForURL('/')
+    // Входимо як звичайний користувач
+    await loginAsUser()
     
     // Перевіряємо що для користувача показується правильна роль
     await expect(page.getByTestId('user-section')).toBeVisible()

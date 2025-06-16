@@ -4,7 +4,11 @@
     <div class="cart-header">
       <h2 class="cart-title" data-testid="cart-title">
         🛒 Кошик покупок
-        <span v-if="!cartStore.isEmpty" class="cart-count">
+        <span 
+          class="cart-count" 
+          :class="{ 'cart-count--hidden': cartStore.isEmpty }"
+          data-testid="cart-items-count"
+        >
           ({{ cartStore.totalItems }})
         </span>
       </h2>
@@ -28,11 +32,30 @@
       <div class="empty-cart-icon">🛒</div>
       <h3>Ваш кошик порожній</h3>
       <p>Додайте товари для продовження покупок</p>
+      
+      <!-- Empty cart total -->
+      <div class="empty-cart-total">
+        <span>Загальна сума: </span>
+        <span 
+          class="total-price"
+          data-testid="total-price"
+        >
+          {{ formatPrice(0) }}
+        </span>
+      </div>
+      
+      <router-link 
+        to="/" 
+        class="continue-shopping-link"
+        data-testid="continue-shopping-link"
+      >
+        Почати покупки
+      </router-link>
     </div>
 
     <!-- Cart items -->
     <div v-else class="cart-content">
-      <div class="cart-items">
+      <div class="cart-items" data-testid="cart-items-list">
         <div
           v-for="item in cartStore.items"
           :key="item.product.id"
@@ -156,6 +179,16 @@
           <span v-if="cartStore.isLoading">Оформлення...</span>
           <span v-else>Оформити замовлення</span>
         </button>
+        
+        <!-- Loading indicator -->
+        <div
+          v-if="cartStore.isLoading"
+          class="loading-indicator"
+          data-testid="loading-indicator"
+        >
+          <div class="loading-spinner"></div>
+          <span>Оформлення замовлення...</span>
+        </div>
       </div>
     </div>
 
@@ -309,6 +342,10 @@ defineExpose({
   font-size: 0.8rem;
 }
 
+.cart-count--hidden {
+  opacity: 0.5;
+}
+
 .clear-cart-button {
   padding: 0.5rem 1rem;
   background: #dc3545;
@@ -343,6 +380,36 @@ defineExpose({
 .empty-cart p {
   margin: 0;
   font-size: 0.9rem;
+}
+
+.empty-cart-total {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.empty-cart-total .total-price {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.continue-shopping-link {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.continue-shopping-link:hover {
+  background: #0056b3;
 }
 
 .cart-content {
@@ -549,6 +616,30 @@ defineExpose({
   border-radius: 8px;
   text-align: center;
   font-weight: 500;
+}
+
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e9ecef;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .sr-only {

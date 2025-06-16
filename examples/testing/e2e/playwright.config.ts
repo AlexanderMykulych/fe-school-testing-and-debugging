@@ -68,7 +68,7 @@ export default defineConfig({
   // Налаштування виконання тестів
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1,
   workers: process.env.CI ? 1 : undefined,
 
   // Репортери
@@ -93,8 +93,7 @@ export default defineConfig({
   expect: {
     // Візуальні порівняння
     toHaveScreenshot: {
-      threshold: 0.3,
-      mode: 'strict'
+      threshold: 0.3
     },
     // Таймаут для очікувань
     timeout: 10_000

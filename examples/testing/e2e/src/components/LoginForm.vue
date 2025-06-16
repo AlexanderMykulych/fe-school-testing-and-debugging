@@ -61,7 +61,7 @@
       <div 
         v-if="authStore.error" 
         class="form-error form-error--server"
-        data-testid="server-error"
+        data-testid="error-message"
       >
         {{ authStore.error }}
       </div>

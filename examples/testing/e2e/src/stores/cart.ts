@@ -125,7 +125,7 @@ export const useCartStore = defineStore('cart', () => {
       id: 1,
       name: 'Ноутбук MacBook Pro',
       price: 50000,
-      image: 'https://via.placeholder.com/300x300?text=MacBook',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk1hY0Jvb2s8L3RleHQ+PC9zdmc+',
       description: 'Потужний ноутбук для професіоналів',
       category: 'Електроніка',
       stock: 5
@@ -134,7 +134,7 @@ export const useCartStore = defineStore('cart', () => {
       id: 2,
       name: 'iPhone 15 Pro',
       price: 35000,
-      image: 'https://via.placeholder.com/300x300?text=iPhone',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPmlQaG9uZTwvdGV4dD48L3N2Zz4=',
       description: 'Новітній смартфон від Apple',
       category: 'Електроніка',
       stock: 10
@@ -143,7 +143,7 @@ export const useCartStore = defineStore('cart', () => {
       id: 3,
       name: 'Бездротові навушники',
       price: 3000,
-      image: 'https://via.placeholder.com/300x300?text=AirPods',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkFpclBvZHM8L3RleHQ+PC9zdmc+',
       description: 'Якісний звук без проводів',
       category: 'Аксесуари',
       stock: 15
@@ -152,7 +152,7 @@ export const useCartStore = defineStore('cart', () => {
       id: 4,
       name: 'Механічна клавіатура',
       price: 2500,
-      image: 'https://via.placeholder.com/300x300?text=Keyboard',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPktleWJvYXJkPC90ZXh0Pjwvc3ZnPg==',
       description: 'Професійна клавіатура для програмістів',
       category: 'Аксесуари',
       stock: 8
@@ -161,7 +161,7 @@ export const useCartStore = defineStore('cart', () => {
       id: 5,
       name: 'Ігрова миша',
       price: 1200,
-      image: 'https://via.placeholder.com/300x300?text=Mouse',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk1vdXNlPC90ZXh0Pjwvc3ZnPg==',
       description: 'Точна миша для геймерів',
       category: 'Аксесуари',
       stock: 20
@@ -170,7 +170,7 @@ export const useCartStore = defineStore('cart', () => {
       id: 6,
       name: 'Монітор 4K',
       price: 12000,
-      image: 'https://via.placeholder.com/300x300?text=Monitor',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk1vbml0b3I8L3RleHQ+PC9zdmc+',
       description: 'Високоякісний монітор для роботи',
       category: 'Електроніка',
       stock: 3

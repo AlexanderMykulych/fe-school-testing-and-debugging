@@ -1,0 +1,119 @@
+{
+  "config": {
+    "configFile": "/Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/playwright.config.ts",
+    "rootDir": "/Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "e2e",
+        "name": "e2e",
+        "testDir": "/Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/e2e/**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "component",
+        "name": "component",
+        "testDir": "/Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/component/**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "mobile-e2e",
+        "name": "mobile-e2e",
+        "testDir": "/Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/e2e/**/*.spec.ts"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.53.0",
+    "workers": 5,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:5173",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "SyntaxError: /Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/src/components/ProductCard.vue: Unexpected token (4:4)\n\n  2 |   <div \n  3 |     class=\"product-card\"\n> 4 |     :class=\"{ 'product-card--out-of-stock': isOutOfStock }\"\n    |     ^\n  5 |     data-testid=\"product-card\"\n  6 |   >\n  7 |     <!-- Product image -->",
+      "stack": "SyntaxError: /Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/src/components/ProductCard.vue: Unexpected token (4:4)\n\n  2 |   <div \n  3 |     class=\"product-card\"\n> 4 |     :class=\"{ 'product-card--out-of-stock': isOutOfStock }\"\n    |     ^\n  5 |     data-testid=\"product-card\"\n  6 |   >\n  7 |     <!-- Product image -->",
+      "location": {
+        "file": "/Users/alexandermykulych/repo/fe_school_testing_debbuging/examples/testing/e2e/tests/component/ProductCard.spec.ts",
+        "line": 4,
+        "column": 4
+      },
+      "snippet": "\u001b[90m   at \u001b[39mcomponent/ProductCard.spec.ts:4\n\n\u001b[0m \u001b[90m 2 |\u001b[39m \u001b[36mimport\u001b[39m \u001b[33mProductCard\u001b[39m \u001b[36mfrom\u001b[39m \u001b[32m'@/components/ProductCard.vue'\u001b[39m\n \u001b[90m 3 |\u001b[39m \u001b[36mimport\u001b[39m type { \u001b[33mProduct\u001b[39m } \u001b[36mfrom\u001b[39m \u001b[32m'@/stores/cart'\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 4 |\u001b[39m\n \u001b[90m   |\u001b[39m \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 5 |\u001b[39m \u001b[90m// Демонстраційний товар для тестування\u001b[39m\n \u001b[90m 6 |\u001b[39m \u001b[36mconst\u001b[39m mockProduct\u001b[33m:\u001b[39m \u001b[33mProduct\u001b[39m \u001b[33m=\u001b[39m {\n \u001b[90m 7 |\u001b[39m   id\u001b[33m:\u001b[39m \u001b[35m1\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
+    },
+    {
+      "message": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.",
+      "stack": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments."
+    }
+  ],
+  "stats": {
+    "startTime": "2025-06-16T11:12:45.736Z",
+    "duration": 1199.3180000000002,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

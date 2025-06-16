@@ -9,8 +9,8 @@
       </div>
 
       <LoginForm 
-        @login-success="handleLoginSuccess"
-        @login-error="handleLoginError"
+        @loginSuccess="handleLoginSuccess"
+        @loginError="handleLoginError"
       />
 
       <div class="login-footer">
