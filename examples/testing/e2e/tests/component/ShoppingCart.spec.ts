@@ -1,122 +1,219 @@
 import { test, expect } from '@playwright/experimental-ct-vue'
 import ShoppingCart from '@/components/ShoppingCart.vue'
+import type { Product } from '@/stores/cart'
 
-test.describe('ShoppingCart Component', () => {
-  test('displays empty cart', async ({ mount }) => {
-    const component = await mount(ShoppingCart)
+const mockProducts: Product[] = [
+  {
+    id: 1,
+    name: 'Laptop',
+    price: 1000,
+    image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxhcHRvcDwvdGV4dD48L3N2Zz4=',
+    description: 'Laptop',
+    category: 'Electronics',
+    stock: 10
+  },
+  {
+    id: 2,
+    name: 'Mouse',
+    price: 25,
+    image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk1vdXNlPC90ZXh0Pjwvc3ZnPg==',
+    description: 'Mouse',
+    category: 'Electronics',
+    stock: 5
+  }
+]
 
-    // Перевіряємо повідомлення про порожній кошик
-    await expect(component.getByTestId('empty-cart')).toBeVisible()
-    await expect(component.getByTestId('empty-cart')).toContainText('Ваш кошик порожній')
+const cartItems = [
+  { product: mockProducts[0], quantity: 2 },
+  { product: mockProducts[1], quantity: 1 }
+]
 
-    // Перевіряємо що кнопка оформлення недоступна
-    await expect(component.getByTestId('checkout-button')).not.toBeVisible()
-
-    // Перевіряємо що загальна сума показується як 0 для порожнього кошика
-    await expect(component.getByTestId('total-price')).toBeVisible()
-    await expect(component.getByTestId('total-price')).toContainText('0')
-  })
-
-  test('shows purchase prompt for empty cart', async ({ mount }) => {
-    const component = await mount(ShoppingCart)
-
-    // Перевіряємо що є посилання для продовження покупок
-    await expect(component.getByTestId('continue-shopping-link')).toBeVisible()
-    await expect(component.getByTestId('continue-shopping-link')).toContainText('Почати покупки')
-  })
-
-  test('formats prices in UAH currency', async ({ mount }) => {
-    const component = await mount(ShoppingCart)
-
-    // Перевіряємо формат валюти в загальній сумі
-    const totalPrice = component.getByTestId('total-price')
-    await expect(totalPrice).toBeVisible()
-
-    // Якщо кошик порожній, має показувати 0,00 ₴ або схоже
-    await expect(totalPrice).toContainText('0')
-  })
-
-  test('shows loading indicator during checkout', async ({ mount }) => {
-    // Цей тест перевіряє стан завантаження
-    const component = await mount(ShoppingCart)
-
-    // Якщо кошик порожній, індикатор завантаження не повинен показуватися
-    await expect(component.getByTestId('loading-indicator')).not.toBeVisible()
-  })
-
-  test('emits checkout order events', async ({ mount }) => {
-    let checkoutCompletedEmitted = false
-    let emittedTotal = 0
-
-    const component = await mount(ShoppingCart, {
-      on: {
-        'checkout-completed': (total: number) => {
-          checkoutCompletedEmitted = true
-          emittedTotal = total
-        }
-      }
-    })
-
-    // Для порожнього кошика кнопка checkout не показується
-    const checkoutButton = component.getByTestId('checkout-button')
-    await expect(checkoutButton).not.toBeVisible()
-
-    // Подія не повинна емітуватися для порожнього кошика
-    expect(checkoutCompletedEmitted).toBe(false)
-  })
-
-  test('verifies component has methods for emitting events', async ({ mount, page }) => {
-    // Простіша перевірка: чи компонент правильно налаштований для емітування подій
-    let checkoutCompletedEmitted = false
-
-    const component = await mount(ShoppingCart, {
-      on: {
-        'checkout-completed': () => {
-          checkoutCompletedEmitted = true
-        }
-      }
-    })
-
-    // Перевіряємо що компонент монтується правильно
-    await expect(page.getByTestId('shopping-cart')).toBeVisible()
-    await expect(component.getByTestId('empty-cart')).toBeVisible()
-
-    // Перевіряємо що для порожнього кошика кнопка checkout не показується
-    const checkoutButton = component.getByTestId('checkout-button')
-    await expect(checkoutButton).not.toBeVisible()
-
-    // Подія не емітується для порожнього кошика (як і очікується)
-    expect(checkoutCompletedEmitted).toBe(false)
-
-    // Примітка: повноцінне тестування емітування подій з товарами 
-    // краще робити в E2E тестах, де можна симулювати додавання товарів
-  })
-
-  test('accessibility - ARIA attributes and semantics', async ({ mount }) => {
-    const component = await mount(ShoppingCart)
-
-    // Перевіряємо семантичні елементи
-    const cartRegion = component.locator('[role="region"]').first()
-    if (await cartRegion.count() > 0) {
-      await expect(cartRegion).toBeVisible()
-    }
-
-    // Для порожнього кошика checkout-button не показується
-    const checkoutButton = component.getByTestId('checkout-button')
-    await expect(checkoutButton).not.toBeVisible()
-
-    // Перевіряємо що посилання має доступну назву
-    const continueLink = component.getByTestId('continue-shopping-link')
-    await expect(continueLink).toBeVisible()
-  })
-
-  test('shows cart item count', async ({ mount }) => {
-    const component = await mount(ShoppingCart)
-
-    // Для порожнього кошика
-    const itemCount = component.getByTestId('cart-items-count')
-    if (await itemCount.count() > 0) {
-      await expect(itemCount).toContainText('0')
+test('displays cart items correctly', async ({ mount }) => {
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: cartItems
     }
   })
+
+  // Перевіряємо що відображаються всі товари
+  await expect(component.getByTestId('cart-item')).toHaveCount(2)
+
+  // Перевіряємо перший товар
+  const firstItem = component.getByTestId('cart-item').first()
+  await expect(firstItem.getByTestId('item-name')).toContainText('Laptop')
+  await expect(firstItem.getByTestId('item-quantity')).toContainText('2')
+  await expect(firstItem.getByTestId('item-price')).toContainText('$1,000')
+
+  // Перевіряємо другий товар
+  const secondItem = component.getByTestId('cart-item').nth(1)
+  await expect(secondItem.getByTestId('item-name')).toContainText('Mouse')
+  await expect(secondItem.getByTestId('item-quantity')).toContainText('1')
+  await expect(secondItem.getByTestId('item-price')).toContainText('$25')
+})
+
+test('displays correct total price', async ({ mount }) => {
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: cartItems
+    }
+  })
+
+  // Перевіряємо загальну суму (1000 * 2 + 25 * 1 = 2025)
+  await expect(component.getByTestId('cart-total')).toContainText('$2,025')
+})
+
+test('shows empty cart message when no items', async ({ mount }) => {
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: []
+    }
+  })
+
+  // Перевіряємо повідомлення про порожній кошик
+  await expect(component.getByTestId('empty-cart-message')).toBeVisible()
+  await expect(component.getByTestId('empty-cart-message')).toContainText('Your cart is empty')
+
+  // Перевіряємо що загальна сума не відображається
+  await expect(component.getByTestId('cart-total')).not.toBeVisible()
+})
+
+test('allows removing items from cart', async ({ mount }) => {
+  let removedItemId: number | null = null
+
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: cartItems
+    },
+    on: {
+      'remove-item': (itemId: number) => {
+        removedItemId = itemId
+      }
+    }
+  })
+
+  // Видаляємо перший товар
+  await component.getByTestId('remove-button').first().click()
+
+  // Перевіряємо що подія емітувалася з правильним ID
+  expect(removedItemId).toBe(1)
+})
+
+test('allows updating item quantities', async ({ mount }) => {
+  let updatedItem: { id: number; quantity: number } | null = null
+
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: cartItems
+    },
+    on: {
+      'update-quantity': (item: { id: number; quantity: number }) => {
+        updatedItem = item
+      }
+    }
+  })
+
+  // Змінюємо кількість першого товару
+  const quantityInput = component.getByTestId('quantity-input').first()
+  await quantityInput.fill('5')
+
+  // Перевіряємо що подія емітувалася з правильними даними
+  expect(updatedItem).toEqual({ id: 1, quantity: 5 })
+})
+
+test('disables checkout button for empty cart', async ({ mount }) => {
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: []
+    }
+  })
+
+  // Перевіряємо що кнопка checkout неактивна
+  await expect(component.getByTestId('checkout-button')).toBeDisabled()
+})
+
+test('enables checkout button for cart with items', async ({ mount }) => {
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: cartItems
+    }
+  })
+
+  // Перевіряємо що кнопка checkout активна
+  await expect(component.getByTestId('checkout-button')).toBeEnabled()
+})
+
+test('emits checkout event when button clicked', async ({ mount }) => {
+  let checkoutEmitted = false
+
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: cartItems
+    },
+    on: {
+      'checkout': () => {
+        checkoutEmitted = true
+      }
+    }
+  })
+
+  // Клікаємо на кнопку checkout
+  await component.getByTestId('checkout-button').click()
+
+  // Перевіряємо що подія емітувалася
+  expect(checkoutEmitted).toBe(true)
+})
+
+test('displays item subtotals correctly', async ({ mount }) => {
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: cartItems
+    }
+  })
+
+  // Перевіряємо субтотали для кожного товару
+  const firstItemSubtotal = component.getByTestId('cart-item').first().getByTestId('item-subtotal')
+  await expect(firstItemSubtotal).toContainText('$2,000') // 1000 * 2
+
+  const secondItemSubtotal = component.getByTestId('cart-item').nth(1).getByTestId('item-subtotal')
+  await expect(secondItemSubtotal).toContainText('$25') // 25 * 1
+})
+
+test('displays shipping information', async ({ mount }) => {
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: cartItems
+    }
+  })
+
+  // Перевіряємо інформацію про доставку
+  await expect(component.getByTestId('shipping-info')).toBeVisible()
+  await expect(component.getByTestId('shipping-cost')).toContainText('Free shipping on orders over $50')
+})
+
+test('takes visual snapshot of cart', async ({ mount }) => {
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: cartItems
+    }
+  })
+
+  // Очікуємо завантаження компонента
+  await expect(component.getByTestId('cart-total')).toBeVisible()
+
+  // Робимо скріншот
+  await expect(component).toHaveScreenshot('shopping-cart-with-items.png')
+})
+
+test('takes visual snapshot of empty cart', async ({ mount }) => {
+  const component = await mount(ShoppingCart, {
+    props: {
+      items: []
+    }
+  })
+
+  // Очікуємо завантаження компонента
+  await expect(component.getByTestId('empty-cart-message')).toBeVisible()
+
+  // Робимо скріншот порожнього кошика
+  await expect(component).toHaveScreenshot('shopping-cart-empty.png')
 }) 

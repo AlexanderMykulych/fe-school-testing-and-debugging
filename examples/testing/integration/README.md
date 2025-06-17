@@ -117,37 +117,37 @@ test('повинен зберегти та отримати сесію з Redis'
 
 ### Встановлення залежностей
 ```bash
-npm install
+pnpm install
 ```
 
 ### Запуск всіх тестів
 ```bash
-npm test
+pnpm test
 ```
 
 ### Запуск тестів з UI
 ```bash
-npm run test:ui
+pnpm test:ui
 ```
 
 ### Запуск з покриттям коду
 ```bash
-npm run test:coverage
+pnpm test:coverage
 ```
 
 ### Запуск окремих кейсів
 ```bash
 # Network mocking
-npm test src/1-network-mocking
+pnpm test src/1-network-mocking
 
 # Browser APIs
-npm test src/2-browser-apis
+pnpm test src/2-browser-apis
 
 # Vue + Pinia
-npm test src/3-vue-pinia
+pnpm test src/3-vue-pinia
 
 # TestContainer
-npm test src/4-testcontainer
+pnpm test src/4-testcontainer
 ```
 
 ## 🔧 Налаштування проекту

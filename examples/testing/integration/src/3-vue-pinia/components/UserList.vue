@@ -129,7 +129,7 @@
               class="btn btn-sm"
               :data-testid="`toggle-btn-${user.id}`"
             >
-              {{ user.active ? '⏸️' : '▶️' }}
+              {{ user.active ? 'Пауза' : 'Старт' }}
             </button>
             
             <button
@@ -138,7 +138,7 @@
               class="btn btn-sm btn-danger"
               :data-testid="`delete-btn-${user.id}`"
             >
-              🗑️
+              Видалити
             </button>
           </div>
         </div>

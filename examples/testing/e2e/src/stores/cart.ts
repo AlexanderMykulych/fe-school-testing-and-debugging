@@ -17,7 +17,7 @@ export interface CartItem {
 }
 
 /**
- * 🛒 Store для управління кошиком покупок
+ * Store для управління кошиком покупок
  */
 export const useCartStore = defineStore('cart', () => {
   // State

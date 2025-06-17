@@ -113,6 +113,7 @@ test('повинен емітити події при взаємодії з ко
   await wrapper.find('[data-testid="edit-user-btn"]').trigger('click')
   
   const editEvents = wrapper.emitted('editRequested')
+  expect(editEvents).toBeTruthy()
   expect(editEvents).toHaveLength(1)
   expect(editEvents![0]).toEqual([mockUser])
 })
@@ -144,10 +145,12 @@ test('повинен оновити статус користувача', async 
   // Натискаємо кнопку деактивації
   await wrapper.find('[data-testid="toggle-active-btn"]').trigger('click')
 
-  // Чекаємо оновлення
+  // Чекаємо завершення API запиту
+  await new Promise(resolve => setTimeout(resolve, 100))
   await wrapper.vm.$nextTick()
 
   const updateEvents = wrapper.emitted('userUpdated')
+  expect(updateEvents).toBeTruthy()
   expect(updateEvents).toHaveLength(1)
 })
 
@@ -164,10 +167,21 @@ test('повинен видалити користувача після підт
   store.setCurrentUser(mockUser)
   mockConfirm.mockReturnValue(true) // Підтверджуємо видалення
 
+  // Мокаємо API відповідь для видалення
+  server.use(
+    http.delete('/api/users/1', () => {
+      return new HttpResponse(null, { status: 204 })
+    })
+  )
+
   const wrapper = mount(UserProfile)
 
   // Натискаємо кнопку видалення
   await wrapper.find('[data-testid="delete-user-btn"]').trigger('click')
+
+  // Чекаємо завершення API запиту
+  await new Promise(resolve => setTimeout(resolve, 100))
+  await wrapper.vm.$nextTick()
 
   // Перевіряємо що confirm було викликано
   expect(mockConfirm).toHaveBeenCalledWith(
@@ -175,6 +189,7 @@ test('повинен видалити користувача після підт
   )
 
   const deleteEvents = wrapper.emitted('userDeleted')
+  expect(deleteEvents).toBeTruthy()
   expect(deleteEvents).toHaveLength(1)
   expect(deleteEvents![0]).toEqual([mockUser.id])
 })
@@ -367,6 +382,7 @@ test('повинен вибрати користувача при кліку', a
 
   // Перевіряємо що емітнута подія
   const selectedEvents = wrapper.emitted('userSelected')
+  expect(selectedEvents).toBeTruthy()
   expect(selectedEvents).toHaveLength(1)
   expect(selectedEvents![0]).toEqual([mockUser])
 })
@@ -398,7 +414,12 @@ test('повинен перемикати статус користувача в
   // Клікаємо кнопку перемикання статусу
   await wrapper.find('[data-testid="toggle-btn-1"]').trigger('click')
 
+  // Чекаємо завершення API запиту
+  await new Promise(resolve => setTimeout(resolve, 100))
+  await wrapper.vm.$nextTick()
+
   const updateEvents = wrapper.emitted('userUpdated')
+  expect(updateEvents).toBeTruthy()
   expect(updateEvents).toHaveLength(1)
 })
 
@@ -415,10 +436,21 @@ test('повинен видалити користувача зі списку',
   store.addUser(mockUser)
   mockConfirm.mockReturnValue(true) // Підтверджуємо видалення
 
+  // Мокаємо API відповідь для видалення
+  server.use(
+    http.delete('/api/users/1', () => {
+      return new HttpResponse(null, { status: 204 })
+    })
+  )
+
   const wrapper = mount(UserList)
 
   // Клікаємо кнопку видалення
   await wrapper.find('[data-testid="delete-btn-1"]').trigger('click')
+
+  // Чекаємо завершення API запиту
+  await new Promise(resolve => setTimeout(resolve, 100))
+  await wrapper.vm.$nextTick()
 
   // Перевіряємо підтвердження
   expect(mockConfirm).toHaveBeenCalled()

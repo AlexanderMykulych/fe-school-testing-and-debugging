@@ -14,27 +14,5 @@ export default defineConfig({
         '**/*.spec.ts'
       ]
     },
-    
-    // Демонстрація injected fixtures через проекти
-    projects: [
-      {
-        name: 'development',
-        test: {
-          provide: {
-            apiUrl: 'http://localhost:3000/api',
-            dbUrl: 'sqlite://dev.db'
-          }
-        }
-      },
-      {
-        name: 'production', 
-        test: {
-          provide: {
-            apiUrl: 'https://api.production.com',
-            dbUrl: 'postgresql://prod-db'
-          }
-        }
-      }
-    ]
   }
 }); 

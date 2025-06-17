@@ -4,7 +4,7 @@
     <section class="hero" data-testid="hero-section">
       <div class="hero-content">
         <h1 class="hero-title">
-          Ласкаво просимо до E-Shop! 🛍️
+          Ласкаво просимо до E-Shop!
         </h1>
         <p class="hero-subtitle">
           Найкращі товари за найкращими цінами
@@ -18,7 +18,7 @@
         </router-link>
       </div>
       <div class="hero-image">
-        <div class="hero-emoji">🛒</div>
+        <div class="hero-emoji"></div>
       </div>
     </section>
 
@@ -125,7 +125,7 @@ const handleProductAdded = (product: Product, quantity: number) => {
 // Lifecycle
 onMounted(() => {
   // Можна додати аналітику чи інші ініціалізації
-  console.log('Головна сторінка завантажена')
+  
 })
 
 // Expose for testing

@@ -29,7 +29,7 @@
       class="success-notification"
       data-testid="success-notification"
     >
-      ✅ Успішний вхід! Перенаправлення...
+      Успішний вхід! Перенаправлення...
     </div>
   </div>
 </template>

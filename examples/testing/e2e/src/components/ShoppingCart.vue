@@ -198,7 +198,7 @@
       class="success-message"
       data-testid="success-message"
     >
-      ✅ Замовлення успішно оформлено!
+      Замовлення успішно оформлено!
     </div>
   </div>
 </template>

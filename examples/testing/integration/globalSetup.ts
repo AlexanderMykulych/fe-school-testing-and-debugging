@@ -9,11 +9,11 @@ let redisContainer: StartedTestContainer | null = null
 const configPath = join(__dirname, 'redis-config.json')
 
 /**
- * 🚀 Глобальне налаштування для тестів
+ * Глобальне налаштування для тестів
  * Запускає Redis контейнер один раз для всіх тестів
  */
 export async function setup() {
-  console.log('🏗️ Глобальне налаштування: запуск Redis контейнера...')
+  console.log('Глобальне налаштування: запуск Redis контейнера...')
   
   try {
     redisContainer = await new GenericContainer('redis:7.0-alpine')
@@ -24,7 +24,7 @@ export async function setup() {
     const redisHost = redisContainer.getHost()
     const redisPort = redisContainer.getMappedPort(6379)
     
-    console.log(`✅ Redis контейнер запущено на ${redisHost}:${redisPort}`)
+    console.log(`Redis контейнер запущено на ${redisHost}:${redisPort}`)
     
     // Зберігаємо параметри підключення в файл
     const config = {
@@ -34,27 +34,27 @@ export async function setup() {
     }
     
     writeFileSync(configPath, JSON.stringify(config, null, 2))
-    console.log(`📁 Конфігурація збережена в ${configPath}`)
+    console.log(`Конфігурація збережена в ${configPath}`)
     
   } catch (error) {
-    console.error('❌ Помилка запуску Redis контейнера:', error)
+    console.error('Помилка запуску Redis контейнера:', error)
     throw error
   }
 }
 
 /**
- * 🧹 Глобальне очищення після тестів
+ * Глобальне очищення після тестів
  * Зупиняє Redis контейнер і видаляє файл конфігурації
  */
 export async function teardown() {
-  console.log('🧹 Глобальне очищення: зупинка Redis контейнера...')
+  console.log('Глобальне очищення: зупинка Redis контейнера...')
   
   if (redisContainer) {
     try {
       await redisContainer.stop()
-      console.log('✅ Redis контейнер зупинено')
+      console.log('Redis контейнер зупинено')
     } catch (error) {
-      console.error('❌ Помилка зупинки Redis контейнера:', error)
+      console.error('Помилка зупинки Redis контейнера:', error)
     }
   }
   
@@ -63,10 +63,10 @@ export async function teardown() {
     if (existsSync(configPath)) {
       const { unlinkSync } = await import('fs')
       unlinkSync(configPath)
-      console.log('🗑️ Файл конфігурації видалено')
+      console.log('Файл конфігурації видалено')
     }
   } catch (error) {
-    console.error('❌ Помилка видалення файлу конфігурації:', error)
+    console.error('Помилка видалення файлу конфігурації:', error)
   }
 }
 

@@ -24,7 +24,7 @@ export class StorageService {
     this.sessionStorage = sessionStorage
   }
 
-  // 📦 LocalStorage методи (для постійного зберігання)
+  // LocalStorage методи (для постійного зберігання)
 
   /**
    * Зберегти об'єкт в localStorage
@@ -184,7 +184,7 @@ export class StorageService {
     return this.removeSessionItem('session')
   }
 
-  // 📊 Утилітарні методи
+  // Утилітарні методи
 
   /**
    * Отримати розмір localStorage (наближено)

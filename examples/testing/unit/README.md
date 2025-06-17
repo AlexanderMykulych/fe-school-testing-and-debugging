@@ -33,22 +33,22 @@
 
 ### Встановлення залежностей
 ```bash
-npm install
+pnpm install
 ```
 
 ### Запуск тестів
 ```bash
 # Запустити всі тести
-npm test
+pnpm test
 
 # Запустити тести у watch режимі
-npm run test:watch
+pnpm test:watch
 
 # Запустити тести з UI
-npm run test:ui
+pnpm test:ui
 
 # Запустити тести з coverage
-npm run test:coverage
+pnpm test:coverage
 ```
 
 ## 📁 Структура Проекту

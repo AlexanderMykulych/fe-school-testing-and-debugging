@@ -200,10 +200,15 @@ test('повинен отримати поточну позицію', async () =
 test('повинен обробити помилку геолокації', async () => {
   const mockGeolocation = {
     getCurrentPosition: vi.fn((success, error) => {
-      error({
+      // Створюємо правильний об'єкт помилки GeolocationPositionError
+      const geolocationError = {
         code: 1, // PERMISSION_DENIED
-        message: 'User denied Geolocation'
-      })
+        message: 'User denied Geolocation',
+        PERMISSION_DENIED: 1,
+        POSITION_UNAVAILABLE: 2,
+        TIMEOUT: 3
+      }
+      error(geolocationError)
     }),
     watchPosition: vi.fn(),
     clearWatch: vi.fn()

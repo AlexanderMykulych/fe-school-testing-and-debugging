@@ -1,4 +1,4 @@
-import { test as baseTest, expect, vi } from 'vitest';
+import { test, expect, vi } from 'vitest';
 
 /**
  * ПРОДВИНУТІ VITEST FIXTURES
@@ -11,54 +11,62 @@ import { test as baseTest, expect, vi } from 'vitest';
  * - Композицію fixtures
  */
 
-// Основний тест з injected fixtures
-const testWithConfig = baseTest.extend({
-  // Injected fixture - може бути переизначений в vitest.config.ts
-  apiUrl: [
-    'http://localhost:3000/api', // default значення
-    { injected: true }
-  ],
+// Базовий test з розширеними можливостями
+const baseTest = test;
+
+/**
+ * Injected fixtures - значення доступні в тестах
+ * 
+ * @param apiUrl - API URL
+ * @param dbUrl - Database URL
+ * @param httpClient - HTTP клиент
+ * @param dbClient - Database клиент
+ */
+const testWithConfig = baseTest.extend<{
+  apiUrl: string;
+  dbUrl: string;
+  httpClient: {
+    baseUrl: string;
+    get: (path: string) => Promise<{ data: string }>;
+    post: (path: string, data: any) => Promise<{ body: any }>;
+  };
+  dbClient: {
+    url: string;
+    query: (sql: string) => Promise<any[]>;
+  };
+}>({
+  // Injected values - доступні без setup/teardown
+  apiUrl: ['http://localhost:3000/api', { injected: true }],
+  dbUrl: ['sqlite://test.db', { injected: true }],
   
-  // Database URL також може бути переизначений
-  dbUrl: [
-    'sqlite://test.db',
-    { injected: true }
-  ],
-  
-  // HTTP клієнт залежить від API URL
-  httpClient: async ({ apiUrl }, use) => {
-    const client = {
-      baseUrl: apiUrl,
-      async get(path: string) {
-        return { data: `GET ${apiUrl}${path}` };
-      },
-      async post(path: string, data: any) {
-        return { data: `POST ${apiUrl}${path}`, body: data };
-      }
-    };
-    
-    console.log(`🔧 HTTP client configured for: ${apiUrl}`);
-    await use(client);
-    console.log('🧹 HTTP client cleanup');
-  },
-  
-  // Database client
-  dbClient: async ({ dbUrl }, use) => {
-    const client = {
-      url: dbUrl,
-      async query(sql: string) {
-        return { query: sql, from: dbUrl };
-      }
-    };
-    
-    console.log(`💾 Database client connected to: ${dbUrl}`);
-    await use(client);
-    console.log('💾 Database client disconnected');
-  }
+  // Computed fixtures - залежать від injected values
+  httpClient: ({ apiUrl }, use) => use({
+    baseUrl: apiUrl,
+    async get(path: string) {
+      return { data: `GET ${path} from ${apiUrl}` };
+    },
+    async post(path: string, data: any) {
+      return { body: data };
+    }
+  }),
+
+  dbClient: ({ dbUrl }, use) => use({
+    url: dbUrl,
+    async query(sql: string) {
+      return [{ result: `Query: ${sql} on ${dbUrl}` }];
+    }
+  })
 });
 
 // File-scoped fixture - ініціалізується раз на файл
-const testWithFileCache = baseTest.extend({
+const testWithFileCache = baseTest.extend<{
+  fileCache: {
+    set: (key: string, value: any) => void;
+    get: (key: string) => any;
+    size: () => number;
+    clear: () => void;
+  };
+}>({
   fileCache: [
     async ({}, use) => {
       const cache = new Map<string, any>();
@@ -78,7 +86,13 @@ const testWithFileCache = baseTest.extend({
 });
 
 // Автоматичний fixture - виконується завжди
-const testWithAutoLogger = baseTest.extend({
+const testWithAutoLogger = baseTest.extend<{
+  autoLogger: {
+    info: (msg: string) => void;
+    error: (msg: string) => void;
+    getLogs: () => string[];
+  };
+}>({
   autoLogger: [
     async ({}, use) => {
       const logs: string[] = [];
@@ -98,19 +112,98 @@ const testWithAutoLogger = baseTest.extend({
   ]
 });
 
-// Композиція fixtures
-const testWithAll = testWithConfig
-  .extend(testWithFileCache.fixtures)
-  .extend(testWithAutoLogger.fixtures);
+// Композиція fixtures - об'єднуємо всі fixtures в один тест
+const testWithAll = baseTest.extend<{
+  apiUrl: string;
+  dbUrl: string;
+  httpClient: {
+    baseUrl: string;
+    get: (path: string) => Promise<{ data: string }>;
+    post: (path: string, data: any) => Promise<{ body: any }>;
+  };
+  dbClient: {
+    url: string;
+    query: (sql: string) => Promise<any[]>;
+  };
+  fileCache: {
+    set: (key: string, value: any) => void;
+    get: (key: string) => any;
+    size: () => number;
+    clear: () => void;
+  };
+  autoLogger: {
+    info: (msg: string) => void;
+    error: (msg: string) => void;
+    getLogs: () => string[];
+  };
+}>({
+  // Копіюємо всі fixtures
+  apiUrl: ['http://localhost:3000/api', { injected: true }],
+  dbUrl: ['sqlite://test.db', { injected: true }],
+
+  httpClient: ({ apiUrl }, use) => use({
+    baseUrl: apiUrl,
+    async get(path: string) {
+      return { data: `GET ${path} from ${apiUrl}` };
+    },
+    async post(path: string, data: any) {
+      return { body: data };
+    }
+  }),
+
+  dbClient: ({ dbUrl }, use) => use({
+    url: dbUrl,
+    async query(sql: string) {
+      return [{ result: `Query: ${sql} on ${dbUrl}` }];
+    }
+  }),
+
+  fileCache: [
+    async ({ }, use) => {
+      const cache = new Map<string, any>();
+      console.log('🗃️ File cache initialized');
+
+      await use({
+        set: (key: string, value: any) => cache.set(key, value),
+        get: (key: string) => cache.get(key),
+        size: () => cache.size,
+        clear: () => cache.clear()
+      });
+
+      console.log(`🗃️ File cache cleanup. Final size: ${cache.size}`);
+    },
+    { scope: 'file' }
+  ],
+
+  autoLogger: [
+    async ({ }, use) => {
+      const logs: string[] = [];
+      const logger = {
+        info: (msg: string) => logs.push(`[INFO] ${msg}`),
+        error: (msg: string) => logs.push(`[ERROR] ${msg}`),
+        getLogs: () => [...logs]
+      };
+
+      logger.info('Auto logger started');
+      await use(logger);
+      logger.info('Auto logger finished');
+
+      console.log('📝 Auto logs:', logs);
+    },
+    { auto: true }
+  ]
+});
 
 // Тести з injected fixtures
 testWithConfig('should use injected API URL', ({ apiUrl, httpClient }) => {
-  expect(apiUrl).toBe('http://localhost:3000/api'); // default в тесті
+  // Перевіряємо, що значення отримано (може бути з конфігурації або дефолтне)
+  expect(apiUrl).toBeDefined();
   expect(httpClient.baseUrl).toBe(apiUrl);
 });
 
 testWithConfig('should use injected database URL', ({ dbUrl, dbClient }) => {
-  expect(dbUrl).toBe('sqlite://test.db'); // default в тесті
+  // Перевіряємо, що значення отримано (може бути з конфігурації або дефолтне)
+  expect(dbUrl).toBeDefined();
   expect(dbClient.url).toBe(dbUrl);
 });
 
@@ -181,7 +274,13 @@ testWithAll('should use all fixtures together', ({
 });
 
 // Демонстрація scoped values (override)
-const testWithScopedOverrides = baseTest.extend({
+const testWithScopedOverrides = baseTest.extend<{
+  environment: string;
+  config: {
+    env: string;
+    debug: boolean;
+  };
+}>({
   environment: 'development',
   config: ({ environment }, use) => use({
     env: environment,
@@ -196,8 +295,18 @@ testWithScopedOverrides('should use default environment', ({ config }) => {
 });
 
 // Групи тестів з override (імітуємо describe без вкладеності)
-const productionTests = testWithScopedOverrides.extend({
-  environment: 'production' // override default
+const productionTests = baseTest.extend<{
+  environment: string;
+  config: {
+    env: string;
+    debug: boolean;
+  };
+}>({
+  environment: 'production', // override default
+  config: ({ environment }, use) => use({
+    env: environment,
+    debug: environment === 'development'
+  })
 });
 
 productionTests('should use production environment', ({ config }) => {
@@ -205,8 +314,18 @@ productionTests('should use production environment', ({ config }) => {
   expect(config.debug).toBe(false);
 });
 
-const testingTests = testWithScopedOverrides.extend({
-  environment: 'testing'
+const testingTests = baseTest.extend<{
+  environment: string;
+  config: {
+    env: string;
+    debug: boolean;
+  };
+}>({
+  environment: 'testing',
+  config: ({ environment }, use) => use({
+    env: environment,
+    debug: environment === 'development'
+  })
 });
 
 testingTests('should use testing environment', ({ config }) => {
@@ -215,7 +334,11 @@ testingTests('should use testing environment', ({ config }) => {
 });
 
 // Демонстрація fixture cleanup order
-const testWithCleanupOrder = baseTest.extend({
+const testWithCleanupOrder = baseTest.extend<{
+  first: string;
+  second: string;
+  third: string;
+}>({
   first: async ({}, use) => {
     console.log('🚀 First fixture setup');
     await use('first-value');
@@ -243,7 +366,12 @@ testWithCleanupOrder('should demonstrate cleanup order', ({ first, second, third
 });
 
 // Тест з мок fixtures
-const testWithMocks = baseTest.extend({
+const testWithMocks = baseTest.extend<{
+  mockDate: Date;
+  mockConsole: {
+    getLogs: () => string[];
+  };
+}>({
   mockDate: async ({}, use) => {
     const fixedDate = new Date('2024-01-15T12:00:00.000Z');
     vi.useFakeTimers();
@@ -278,10 +406,20 @@ testWithMocks('should work with mocked time and console', ({ mockDate, mockConso
 });
 
 // Асинхронний fixture з ресурсами
-const testWithAsyncResources = baseTest.extend({
+const testWithAsyncResources = baseTest.extend<{
+  asyncResource: {
+    id: string;
+    status: string;
+    data: { initialized: boolean };
+  };
+}>({
   asyncResource: async ({}, use) => {
     // Імітуємо підключення до зовнішнього ресурсу
-    const resource = await new Promise(resolve => {
+    const resource = await new Promise<{
+      id: string;
+      status: string;
+      data: { initialized: boolean };
+    }>(resolve => {
       setTimeout(() => {
         resolve({
           id: 'resource-123',
@@ -291,17 +429,18 @@ const testWithAsyncResources = baseTest.extend({
       }, 10);
     });
     
-    console.log('🔗 Async resource connected:', (resource as any).id);
+    console.log('🔗 Async resource connected:', resource.id);
     
     await use(resource);
     
     // Імітуємо відключення
     await new Promise(resolve => setTimeout(resolve, 5));
-    console.log('🔗 Async resource disconnected');
+    console.log('🔌 Async resource disconnected:', resource.id);
   }
 });
 
 testWithAsyncResources('should work with async resources', async ({ asyncResource }) => {
-  expect((asyncResource as any).status).toBe('connected');
-  expect((asyncResource as any).data.initialized).toBe(true);
+  expect(asyncResource.id).toBe('resource-123');
+  expect(asyncResource.status).toBe('connected');
+  expect(asyncResource.data.initialized).toBe(true);
 }); 

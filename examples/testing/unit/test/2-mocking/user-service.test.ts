@@ -207,6 +207,20 @@ test('should demonstrate mock function introspection', async () => {
     ['/users/1'],
     ['/users/2']
   ]);
+
+  expect(getMock.mock.calls).toMatchInlineSnapshot(`
+    [
+      [
+        "/users",
+      ],
+      [
+        "/users/1",
+      ],
+      [
+        "/users/2",
+      ],
+    ]
+  `)
 });
 
 test('should demonstrate spy functionality', async () => {

@@ -1,167 +1,165 @@
 import { test, expect } from '@playwright/experimental-ct-vue'
 import LoginForm from '@/components/LoginForm.vue'
 
-test.describe('LoginForm Component', () => {
-  test('displays login form with all elements', async ({ mount }) => {
-    const component = await mount(LoginForm)
+test('displays login form with all elements', async ({ mount }) => {
+  const component = await mount(LoginForm)
 
-    // Перевіряємо заголовок форми
-    await expect(component.locator('h2')).toContainText('Вхід в систему')
+  // Перевіряємо заголовок форми
+  await expect(component.locator('h2')).toContainText('Вхід в систему')
 
-    // Перевіряємо наявність форми
-    await expect(component.getByTestId('login-form')).toBeVisible()
+  // Перевіряємо наявність форми
+  await expect(component.getByTestId('login-form')).toBeVisible()
 
-    // Перевіряємо поля вводу
-    await expect(component.getByTestId('username-input')).toBeVisible()
-    await expect(component.getByTestId('password-input')).toBeVisible()
+  // Перевіряємо поля вводу
+  await expect(component.getByTestId('username-input')).toBeVisible()
+  await expect(component.getByTestId('password-input')).toBeVisible()
 
-    // Перевіряємо кнопку входу
-    await expect(component.getByTestId('submit-button')).toBeVisible()
+  // Перевіряємо кнопку входу
+  await expect(component.getByTestId('submit-button')).toBeVisible()
 
-    // Перевіряємо демо облікові записи
-    await expect(component).toContainText('Демо облікові записи')
-    await expect(component).toContainText('admin / admin123')
-    await expect(component).toContainText('user / user123')
-  })
+  // Перевіряємо демо облікові записи
+  await expect(component).toContainText('Демо облікові записи')
+  await expect(component).toContainText('admin / admin123')
+  await expect(component).toContainText('user / user123')
+})
 
-  test('login button disabled for short input data', async ({ mount }) => {
-    const component = await mount(LoginForm)
+test('login button disabled for short input data', async ({ mount }) => {
+  const component = await mount(LoginForm)
 
-    // За замовчуванням кнопка має бути недоступна
-    await expect(component.getByTestId('submit-button')).toBeDisabled()
+  // За замовчуванням кнопка має бути недоступна
+  await expect(component.getByTestId('submit-button')).toBeDisabled()
 
-    // Вводимо короткий username
-    await component.getByTestId('username-input').fill('ab')
-    await expect(component.getByTestId('submit-button')).toBeDisabled()
+  // Вводимо короткий username
+  await component.getByTestId('username-input').fill('ab')
+  await expect(component.getByTestId('submit-button')).toBeDisabled()
 
-    // Вводимо короткий пароль
-    await component.getByTestId('password-input').fill('12345')
-    await expect(component.getByTestId('submit-button')).toBeDisabled()
-  })
+  // Вводимо короткий пароль
+  await component.getByTestId('password-input').fill('12345')
+  await expect(component.getByTestId('submit-button')).toBeDisabled()
+})
 
-  test('login button enabled for valid data', async ({ mount }) => {
-    const component = await mount(LoginForm)
+test('login button enabled for valid data', async ({ mount }) => {
+  const component = await mount(LoginForm)
 
-    // Вводимо валідні дані
-    await component.getByTestId('username-input').fill('testuser')
-    await component.getByTestId('password-input').fill('password123')
+  // Вводимо валідні дані
+  await component.getByTestId('username-input').fill('testuser')
+  await component.getByTestId('password-input').fill('password123')
 
-    // Кнопка має стати доступною
-    await expect(component.getByTestId('submit-button')).toBeEnabled()
-  })
+  // Кнопка має стати доступною
+  await expect(component.getByTestId('submit-button')).toBeEnabled()
+})
 
-  test('emits successful login event for valid credentials', async ({ mount }) => {
-    let loginSuccessEmitted = false
-    let loginErrorEmitted = false
-    let emittedUser: any = null
+test('emits successful login event for valid credentials', async ({ mount }) => {
+  let loginSuccessEmitted = false
+  let loginErrorEmitted = false
+  let emittedUser: any = null
 
-    const component = await mount(LoginForm, {
-      on: {
-        'loginSuccess': (user: any) => {
-          loginSuccessEmitted = true
-          emittedUser = user
-        },
-        'loginError': () => {
-          loginErrorEmitted = true
-        }
+  const component = await mount(LoginForm, {
+    on: {
+      'loginSuccess': (user: any) => {
+        loginSuccessEmitted = true
+        emittedUser = user
+      },
+      'loginError': () => {
+        loginErrorEmitted = true
       }
-    })
-
-    // Вводимо валідні облікові дані адміністратора
-    await component.getByTestId('username-input').fill('admin')
-    await component.getByTestId('password-input').fill('admin123')
-
-    // Відправляємо форму
-    await component.getByTestId('submit-button').click()
-
-    // Чекаємо на завершення операції входу
-    await expect(component.getByTestId('submit-button')).toContainText('Вхід...', { timeout: 2000 })
-
-    // Чекаємо на завершення входу
-    await expect(component.getByTestId('submit-button')).toContainText('Увійти', { timeout: 3000 })
-
-    // Перевіряємо що емітувалася подія успіху
-    expect(loginSuccessEmitted).toBe(true)
-    expect(loginErrorEmitted).toBe(false)
-    expect(emittedUser).toBeTruthy()
-    expect(emittedUser.username).toBe('admin')
+    }
   })
 
-  test('emits error event for invalid credentials', async ({ mount }) => {
-    let loginSuccessEmitted = false
-    let loginErrorEmitted = false
-    let emittedError: string = ''
+  // Вводимо валідні облікові дані адміністратора
+  await component.getByTestId('username-input').fill('admin')
+  await component.getByTestId('password-input').fill('admin123')
 
-    const component = await mount(LoginForm, {
-      on: {
-        'loginSuccess': () => {
-          loginSuccessEmitted = true
-        },
-        'loginError': (error: string) => {
-          loginErrorEmitted = true
-          emittedError = error
-        }
+  // Відправляємо форму
+  await component.getByTestId('submit-button').click()
+
+  // Чекаємо на завершення операції входу
+  await expect(component.getByTestId('submit-button')).toContainText('Вхід...', { timeout: 2000 })
+
+  // Чекаємо на завершення входу
+  await expect(component.getByTestId('submit-button')).toContainText('Увійти', { timeout: 3000 })
+
+  // Перевіряємо що емітувалася подія успіху
+  expect(loginSuccessEmitted).toBe(true)
+  expect(loginErrorEmitted).toBe(false)
+  expect(emittedUser).toBeTruthy()
+  expect(emittedUser.username).toBe('admin')
+})
+
+test('emits error event for invalid credentials', async ({ mount }) => {
+  let loginSuccessEmitted = false
+  let loginErrorEmitted = false
+  let emittedError: string = ''
+
+  const component = await mount(LoginForm, {
+    on: {
+      'loginSuccess': () => {
+        loginSuccessEmitted = true
+      },
+      'loginError': (error: string) => {
+        loginErrorEmitted = true
+        emittedError = error
       }
-    })
-
-    // Вводимо неправильні облікові дані
-    await component.getByTestId('username-input').fill('wronguser')
-    await component.getByTestId('password-input').fill('wrongpassword')
-
-    // Відправляємо форму
-    await component.getByTestId('submit-button').click()
-
-    // Чекаємо на завершення операції
-    await expect(component.getByTestId('submit-button')).toContainText('Увійти', { timeout: 3000 })
-
-    // Перевіряємо що з'явилася помилка
-    await expect(component.getByTestId('error-message')).toBeVisible()
-    await expect(component.getByTestId('error-message')).toContainText('Невірний логін або пароль')
-
-    // Перевіряємо що емітувалася подія помилки
-    expect(loginSuccessEmitted).toBe(false)
-    expect(loginErrorEmitted).toBe(true)
-    expect(emittedError).toContain('Невірний логін або пароль')
+    }
   })
 
-  test('clears form after successful login', async ({ mount }) => {
-    const component = await mount(LoginForm)
+  // Вводимо неправильні облікові дані
+  await component.getByTestId('username-input').fill('wronguser')
+  await component.getByTestId('password-input').fill('wrongpassword')
 
-    // Вводимо валідні дані
-    await component.getByTestId('username-input').fill('user')
-    await component.getByTestId('password-input').fill('user123')
+  // Відправляємо форму
+  await component.getByTestId('submit-button').click()
 
-    // Відправляємо форму
-    await component.getByTestId('submit-button').click()
+  // Чекаємо на завершення операції
+  await expect(component.getByTestId('submit-button')).toContainText('Увійти', { timeout: 3000 })
 
-    // Чекаємо на завершення входу
-    await expect(component.getByTestId('submit-button')).toContainText('Увійти', { timeout: 3000 })
+  // Перевіряємо що з'явилася помилка
+  await expect(component.getByTestId('error-message')).toBeVisible()
+  await expect(component.getByTestId('error-message')).toContainText('Невірний логін або пароль')
 
-    // Перевіряємо що поля очистилися
-    await expect(component.getByTestId('username-input')).toHaveValue('')
-    await expect(component.getByTestId('password-input')).toHaveValue('')
-  })
+  // Перевіряємо що емітувалася подія помилки
+  expect(loginSuccessEmitted).toBe(false)
+  expect(loginErrorEmitted).toBe(true)
+  expect(emittedError).toContain('Невірний логін або пароль')
+})
 
-  test('has proper accessibility attributes', async ({ mount }) => {
-    const component = await mount(LoginForm)
+test('clears form after successful login', async ({ mount }) => {
+  const component = await mount(LoginForm)
 
-    // Перевіряємо labels
-    const usernameInput = component.getByTestId('username-input')
-    const passwordInput = component.getByTestId('password-input')
+  // Вводимо валідні дані
+  await component.getByTestId('username-input').fill('user')
+  await component.getByTestId('password-input').fill('user123')
 
-    await expect(usernameInput).toHaveAttribute('id', 'username')
-    await expect(passwordInput).toHaveAttribute('id', 'password')
+  // Відправляємо форму
+  await component.getByTestId('submit-button').click()
 
-    // Перевіряємо autocomplete атрибути
-    await expect(usernameInput).toHaveAttribute('autocomplete', 'username')
-    await expect(passwordInput).toHaveAttribute('autocomplete', 'current-password')
+  // Чекаємо на завершення входу
+  await expect(component.getByTestId('submit-button')).toContainText('Увійти', { timeout: 3000 })
 
-    // Перевіряємо required атрибути
-    await expect(usernameInput).toHaveAttribute('required')
-    await expect(passwordInput).toHaveAttribute('required')
+  // Перевіряємо що поля очистилися
+  await expect(component.getByTestId('username-input')).toHaveValue('')
+  await expect(component.getByTestId('password-input')).toHaveValue('')
+})
 
-    // Перевіряємо placeholder тексти
-    await expect(usernameInput).toHaveAttribute('placeholder', "Введіть ім'я користувача")
-    await expect(passwordInput).toHaveAttribute('placeholder', 'Введіть пароль')
-  })
+test('has proper accessibility attributes', async ({ mount }) => {
+  const component = await mount(LoginForm)
+
+  // Перевіряємо labels
+  const usernameInput = component.getByTestId('username-input')
+  const passwordInput = component.getByTestId('password-input')
+
+  await expect(usernameInput).toHaveAttribute('id', 'username')
+  await expect(passwordInput).toHaveAttribute('id', 'password')
+
+  // Перевіряємо autocomplete атрибути
+  await expect(usernameInput).toHaveAttribute('autocomplete', 'username')
+  await expect(passwordInput).toHaveAttribute('autocomplete', 'current-password')
+
+  // Перевіряємо required атрибути
+  await expect(usernameInput).toHaveAttribute('required')
+  await expect(passwordInput).toHaveAttribute('required')
+
+  // Перевіряємо placeholder тексти
+  await expect(usernameInput).toHaveAttribute('placeholder', "Введіть ім'я користувача")
+  await expect(passwordInput).toHaveAttribute('placeholder', 'Введіть пароль')
 }) 

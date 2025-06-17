@@ -10,6 +10,7 @@ import {
 
 // Тести чистих функцій - add
 test('add should add two positive numbers', () => {
+  const a = add
   expect(add(2, 3)).toBe(5);
   expect(add(10, 20)).toBe(30);
 });

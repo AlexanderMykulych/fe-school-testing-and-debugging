@@ -158,15 +158,23 @@ test('повинен повторити запит при помилці сер�
 test('повинен обробити timeout помилку', async () => {
   server.use(
     http.get('/api/users/timeout', async () => {
-      await new Promise(resolve => setTimeout(resolve, 6000)) // Більше ніж timeout
+      // Симулюємо timeout - затримка більша за timeout клієнта
+      await new Promise(resolve => setTimeout(resolve, 2000))
       return HttpResponse.json({ id: 1 })
     })
   )
   
-  await expect(userRepository.getUserById('timeout' as any))
+  // Налаштовуємо короткий timeout для клієнта
+  const shortTimeoutClient = new ApiClient({
+    baseURL: 'http://localhost:3000',
+    timeout: 1000 // 1 секунда
+  })
+  const shortTimeoutRepository = new UserRepository(shortTimeoutClient)
+
+  await expect(shortTimeoutRepository.getUserById('timeout' as any))
     .rejects
     .toThrow()
-})
+}, 5000)
 
 // 📊 Тестування з реальними даними
 

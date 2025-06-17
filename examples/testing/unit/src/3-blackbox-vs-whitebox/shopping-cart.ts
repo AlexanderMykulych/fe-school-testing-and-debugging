@@ -116,7 +116,7 @@ export class ShoppingCart {
     };
   }
 
-  private generateOrderId(): string {
+  public generateOrderId(): string {
     return `ORDER-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   }
 }

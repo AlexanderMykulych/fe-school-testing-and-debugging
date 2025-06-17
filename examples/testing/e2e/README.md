@@ -15,12 +15,12 @@
 
 ### Встановлення залежностей
 ```bash
-npm install
+pnpm install
 ```
 
 ### Встановлення браузерів Playwright
 ```bash
-npm run install:browsers
+pnpm install:browsers
 ```
 
 ### Запуск тестів
@@ -28,34 +28,34 @@ npm run install:browsers
 #### E2E тести
 ```bash
 # Запуск всіх E2E тестів
-npm run test:e2e
+pnpm test:e2e
 
 # Запуск в UI режимі
-npm run test:ui
+pnpm test:ui
 
 # Запуск в headed режимі (видимі браузери)
-npm run test:headed
+pnpm test:headed
 
 # Запуск в debug режимі
-npm run test:debug
+pnpm test:debug
 ```
 
 #### Компонентні тести
 ```bash
 # Запуск компонентних тестів
-npm run test:component
+pnpm test:component
 # або
-npm run test:ct
+pnpm test:ct
 ```
 
 #### Всі тести
 ```bash
-npm test
+pnpm test
 ```
 
 ### Перегляд звітів
 ```bash
-npm run report
+pnpm report
 ```
 
 ## 🧪 Структура тестів

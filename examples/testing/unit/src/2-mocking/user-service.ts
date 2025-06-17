@@ -13,7 +13,7 @@ export interface CreateUserRequest {
 }
 
 export class ApiClient {
-  constructor(private baseUrl: string) {}
+  constructor(public baseUrl: string) { }
 
   async get<T>(endpoint: string): Promise<T> {
     const response = await axios.get(`${this.baseUrl}${endpoint}`);

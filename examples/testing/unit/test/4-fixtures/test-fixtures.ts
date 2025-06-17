@@ -1,5 +1,5 @@
 import { test as baseTest } from 'vitest';
-import { RawUserData } from '../../src/4-fixtures/data-processor.js';
+import { RawUserData } from '../../src/4-fixtures/data-processor';
 
 /**
  * VITEST FIXTURES через test.extend
@@ -223,6 +223,12 @@ export const testWithAutoSetup = test.extend({
     { auto: true } // Марк як автоматичний fixture
   ]
 });
+
+const newTest = test.extend<{}>({
+  testLogger: ({ testLogger }, use) => {
+
+  }
+})
 
 // Per-file fixture - ініціалізується один раз на файл
 export const testWithFileScope = baseTest.extend({
